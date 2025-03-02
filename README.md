@@ -21,5 +21,5 @@ A simple Python application that allows you to load images, apply various filter
 ## Installation
 1. Clone this repository or download the `photo_filter_app.py` file:
    ```bash
-   git clone <https://github.com/gauwow/photo-filter-app>
+   git clone https://github.com/gauwow/photo-filter-app
    cd photo-filter-app
