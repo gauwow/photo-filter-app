@@ -1,6 +1,6 @@
 # Photo Filter App
 
-A simple Python application that allows you to load images, apply various filters, rotate images, and save the processed results. The app displays the original image and the processed image side by side for easy comparison, with performance optimizations and enhanced UI features.
+A simple Python application that allows you to load images, apply various filters, rotate images, and save the processed results. The app displays the original image and the processed image side by side for easy comparison, with performance optimizations and an enhanced UI.
 
 ## Features
 - Load images in common formats (PNG, JPG, JPEG, BMP, GIF).
@@ -15,13 +15,14 @@ A simple Python application that allows you to load images, apply various filter
   - Pencil Sketch (Convert to a grayscale sketch with dark lines)
   - Blur (Softens the image with a Gaussian blur)
   - Vintage Polaroid (Mimic old Polaroid photos with faded colors and a yellowed border)
-- Rotate both original and processed images 90° clockwise.
+  - Watercolor (Soft, painted look with blended colors and light edges)
+- Rotate both original and processed images 90° clockwise, with automatic window resizing to fit the rotated images.
 - Save processed images in PNG or JPEG format.
 - Dynamic resizing to maintain aspect ratios, with optimized processing for performance (resizes to 800x600 max for processing, 400x400 max for display).
-- Labels under each image: "Original" (left) and "Processed" (right), with dynamic bolding when filters, rotations, or saves are applied.
+- Labels under each image: "Original" (left, 16 pt font) and "Processed" (right, 16 pt font), with dynamic bolding when filters, rotations, or saves are applied.
 - Processing time counter showing how long each filter or rotation takes.
-- Square buttons arranged horizontally, with highlighting (sunken border) when selected.
-- Filters reset to the original image before applying a new filter, ensuring each filter starts fresh.
+- Square buttons arranged horizontally, with highlighting (sunken border) when selected, using 10 pt Arial font for better readability.
+- Automatic window resizing to fit images after loading or rotation, with a minimum size of 1300x700 to prevent button squeezing.
 
 ## Prerequisites
 - Python 3.8 or higher
