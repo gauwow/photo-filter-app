@@ -10,15 +10,15 @@ class PhotoFilterApp:
         self.root = root
         self.root.title(
             "Photo Filter App - Original and Processed Side by Side")
-        # Wider window to accommodate buttons and images
-        self.root.geometry("1200x600")
+        # Increased initial window size to prevent button squeezing
+        self.root.geometry("1300x700")
 
         # Track the last selected button for highlighting
         self.last_button = None
 
         # Create a frame to hold the original and processed images side by side
         self.content_frame = tk.Frame(root)
-        self.content_frame.pack(pady=20, padx=10, fill="both", expand=True)
+        self.content_frame.pack(pady=20, padx=20, fill="both", expand=True)
 
         # Left frame for the original image (unchanged)
         self.left_frame = tk.Frame(self.content_frame, width=400)
@@ -28,62 +28,71 @@ class PhotoFilterApp:
         self.right_frame = tk.Frame(self.content_frame, width=400)
         self.right_frame.pack(side="right", padx=10, fill="both", expand=True)
 
-        # Create a frame for buttons (horizontal layout, square buttons)
-        self.button_frame = tk.Frame(root)
-        self.button_frame.pack(pady=10, fill="x")
+        # Create a frame for control buttons (Load, Save, Rotate) above the filters
+        self.control_button_frame = tk.Frame(root)
+        self.control_button_frame.pack(pady=5, fill="x")
 
-        # Square buttons (40x40 pixels) next to each other with highlighting capability
-        self.load_button = tk.Button(self.button_frame, text="Load", command=self.load_image,
-                                     width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.load_button.pack(side="left", padx=2, pady=2)
+        # Control buttons (Load, Save, Rotate) in a row, square and highlighted, with 10 pt font
+        self.load_button = tk.Button(self.control_button_frame, text="Load", command=self.load_image,
+                                     width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.load_button.pack(side="left", padx=5, pady=5)
 
-        self.bw_button = tk.Button(self.button_frame, text="B&W", command=lambda: self.apply_filter_with_timer_and_highlight(
-            self.apply_bw_filter, self.bw_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.bw_button.pack(side="left", padx=2, pady=2)
+        self.save_button = tk.Button(self.control_button_frame, text="Save", command=lambda: self.apply_save_with_highlight(
+            self.save_image, self.save_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.save_button.pack(side="left", padx=5, pady=5)
 
-        self.vivid_cool_button = tk.Button(self.button_frame, text="Vivid", command=lambda: self.apply_filter_with_timer_and_highlight(
-            self.apply_vivid_cool_filter, self.vivid_cool_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.vivid_cool_button.pack(side="left", padx=2, pady=2)
+        self.rotate_button = tk.Button(self.control_button_frame, text="Rotate", command=lambda: self.apply_rotation_with_highlight(
+            self.rotate_image, self.rotate_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.rotate_button.pack(side="left", padx=5, pady=5)
 
-        self.retro_button = tk.Button(self.button_frame, text="Retro", command=lambda: self.apply_filter_with_timer_and_highlight(
-            self.apply_retro_filter, self.retro_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.retro_button.pack(side="left", padx=2, pady=2)
+        # Create a frame for filter buttons (below control buttons)
+        self.filter_button_frame = tk.Frame(root)
+        self.filter_button_frame.pack(pady=10, fill="x")
 
-        self.sepia_button = tk.Button(self.button_frame, text="Sepia", command=lambda: self.apply_filter_with_timer_and_highlight(
-            self.apply_sepia_filter, self.sepia_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.sepia_button.pack(side="left", padx=2, pady=2)
+        # Filter buttons (square, highlighted) in a row, with 10 pt font
+        self.bw_button = tk.Button(self.filter_button_frame, text="B&W", command=lambda: self.apply_filter_with_timer_and_highlight(
+            self.apply_bw_filter, self.bw_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.bw_button.pack(side="left", padx=5, pady=5)
 
-        self.warm_glow_button = tk.Button(self.button_frame, text="Warm", command=lambda: self.apply_filter_with_timer_and_highlight(
-            self.apply_warm_glow_filter, self.warm_glow_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.warm_glow_button.pack(side="left", padx=2, pady=2)
+        self.vivid_cool_button = tk.Button(self.filter_button_frame, text="Vivid", command=lambda: self.apply_filter_with_timer_and_highlight(
+            self.apply_vivid_cool_filter, self.vivid_cool_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.vivid_cool_button.pack(side="left", padx=5, pady=5)
 
-        self.sharpen_button = tk.Button(self.button_frame, text="Sharp", command=lambda: self.apply_filter_with_timer_and_highlight(
-            self.apply_sharpen_filter, self.sharpen_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.sharpen_button.pack(side="left", padx=2, pady=2)
+        self.retro_button = tk.Button(self.filter_button_frame, text="Retro", command=lambda: self.apply_filter_with_timer_and_highlight(
+            self.apply_retro_filter, self.retro_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.retro_button.pack(side="left", padx=5, pady=5)
 
-        self.high_contrast_button = tk.Button(self.button_frame, text="Contrast", command=lambda: self.apply_filter_with_timer_and_highlight(
-            self.apply_high_contrast_filter, self.high_contrast_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.high_contrast_button.pack(side="left", padx=2, pady=2)
+        self.sepia_button = tk.Button(self.filter_button_frame, text="Sepia", command=lambda: self.apply_filter_with_timer_and_highlight(
+            self.apply_sepia_filter, self.sepia_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.sepia_button.pack(side="left", padx=5, pady=5)
 
-        self.pencil_sketch_button = tk.Button(self.button_frame, text="Sketch", command=lambda: self.apply_filter_with_timer_and_highlight(
-            self.apply_pencil_sketch_filter, self.pencil_sketch_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.pencil_sketch_button.pack(side="left", padx=2, pady=2)
+        self.warm_glow_button = tk.Button(self.filter_button_frame, text="Warm", command=lambda: self.apply_filter_with_timer_and_highlight(
+            self.apply_warm_glow_filter, self.warm_glow_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.warm_glow_button.pack(side="left", padx=5, pady=5)
 
-        self.blur_button = tk.Button(self.button_frame, text="Blur", command=lambda: self.apply_filter_with_timer_and_highlight(
-            self.apply_blur_filter, self.blur_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.blur_button.pack(side="left", padx=2, pady=2)
+        self.sharpen_button = tk.Button(self.filter_button_frame, text="Sharp", command=lambda: self.apply_filter_with_timer_and_highlight(
+            self.apply_sharpen_filter, self.sharpen_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.sharpen_button.pack(side="left", padx=5, pady=5)
 
-        self.vintage_polaroid_button = tk.Button(self.button_frame, text="Polaroid", command=lambda: self.apply_filter_with_timer_and_highlight(
-            self.apply_vintage_polaroid_filter, self.vintage_polaroid_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.vintage_polaroid_button.pack(side="left", padx=2, pady=2)
+        self.high_contrast_button = tk.Button(self.filter_button_frame, text="Contrast", command=lambda: self.apply_filter_with_timer_and_highlight(
+            self.apply_high_contrast_filter, self.high_contrast_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.high_contrast_button.pack(side="left", padx=5, pady=5)
 
-        self.rotate_button = tk.Button(self.button_frame, text="Rotate", command=lambda: self.apply_rotation_with_highlight(
-            self.rotate_image, self.rotate_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.rotate_button.pack(side="left", padx=2, pady=2)
+        self.pencil_sketch_button = tk.Button(self.filter_button_frame, text="Sketch", command=lambda: self.apply_filter_with_timer_and_highlight(
+            self.apply_pencil_sketch_filter, self.pencil_sketch_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.pencil_sketch_button.pack(side="left", padx=5, pady=5)
 
-        self.save_button = tk.Button(self.button_frame, text="Save", command=lambda: self.apply_save_with_highlight(
-            self.save_image, self.save_button), state="disabled", width=8, height=2, font=("Arial", 8), relief="raised", borderwidth=2)
-        self.save_button.pack(side="left", padx=2, pady=2)
+        self.blur_button = tk.Button(self.filter_button_frame, text="Blur", command=lambda: self.apply_filter_with_timer_and_highlight(
+            self.apply_blur_filter, self.blur_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.blur_button.pack(side="left", padx=5, pady=5)
+
+        self.vintage_polaroid_button = tk.Button(self.filter_button_frame, text="Polaroid", command=lambda: self.apply_filter_with_timer_and_highlight(
+            self.apply_vintage_polaroid_filter, self.vintage_polaroid_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.vintage_polaroid_button.pack(side="left", padx=5, pady=5)
+
+        self.watercolor_button = tk.Button(self.filter_button_frame, text="Watercolor", command=lambda: self.apply_filter_with_timer_and_highlight(
+            self.apply_watercolor_filter, self.watercolor_button), state="disabled", width=10, height=2, font=("Arial", 10), relief="raised", borderwidth=2)
+        self.watercolor_button.pack(side="left", padx=5, pady=5)
 
         # Labels to display the original and processed images
         self.original_image_label = tk.Label(self.left_frame)
@@ -92,14 +101,16 @@ class PhotoFilterApp:
         self.processed_image_label = tk.Label(self.right_frame)
         self.processed_image_label.pack(pady=20)
 
-        # Labels for image descriptions with dynamic bolding
+        # Labels for image descriptions with dynamic bolding, updated to 16 pt font
         self.original_label = tk.Label(
-            self.left_frame, text="Original", font=("Arial", 12))
-        self.original_label.pack(pady=5)
+            self.left_frame, text="Original", font=("Arial", 16))
+        # Increased pady for better spacing with larger font
+        self.original_label.pack(pady=10)
 
         self.processed_label = tk.Label(
-            self.right_frame, text="Processed", font=("Arial", 12))
-        self.processed_label.pack(pady=5)
+            self.right_frame, text="Processed", font=("Arial", 16))
+        # Increased pady for better spacing with larger font
+        self.processed_label.pack(pady=10)
 
         # Label for processing time (placed below buttons)
         self.processing_time_label = tk.Label(
@@ -134,6 +145,15 @@ class PhotoFilterApp:
         # Resize the image
         return image.resize((new_width, new_height), Image.Resampling.LANCZOS)
 
+    def adjust_window_size(self, width, height):
+        """Adjust the window size to fit the images, maintaining a minimum size and adding padding for buttons."""
+        # Add padding for buttons and labels (e.g., 200 for height, 100 for width to accommodate larger buttons and labels)
+        # Minimum width of 1300 to prevent button squeezing
+        new_width = max(width + 100, 1300)
+        # Minimum height of 700 to prevent overlap
+        new_height = max(height + 200, 700)
+        self.root.geometry(f"{new_width}x{new_height}")
+
     def apply_filter_with_timer_and_highlight(self, filter_function, button):
         """Apply a filter, measure the time taken, update the processing time label, highlight the button, and bold the Processed label."""
         self.highlight_button(button)
@@ -146,9 +166,9 @@ class PhotoFilterApp:
         self.processing_time_label.config(
             text=f"Processing time: {processing_time:.2f} seconds")
         # Bold the Processed label when a filter is applied
-        self.processed_label.config(font=("Arial", 12, "bold"))
+        self.processed_label.config(font=("Arial", 16, "bold"))
         # Reset Original to normal
-        self.original_label.config(font=("Arial", 12))
+        self.original_label.config(font=("Arial", 16))
 
     def apply_rotation_with_highlight(self, rotation_function, button):
         """Apply rotation, highlight the button, and bold both labels."""
@@ -160,17 +180,17 @@ class PhotoFilterApp:
         self.processing_time_label.config(
             text=f"Processing time: {processing_time:.2f} seconds")
         # Bold both labels when rotating (since rotation affects both images)
-        self.original_label.config(font=("Arial", 12, "bold"))
-        self.processed_label.config(font=("Arial", 12, "bold"))
+        self.original_label.config(font=("Arial", 16, "bold"))
+        self.processed_label.config(font=("Arial", 16, "bold"))
 
     def apply_save_with_highlight(self, save_function, button):
         """Apply save, highlight the button, and bold the Processed label."""
         self.highlight_button(button)
         save_function()
         # Bold the Processed label when saving (since it saves the processed image)
-        self.processed_label.config(font=("Arial", 12, "bold"))
+        self.processed_label.config(font=("Arial", 16, "bold"))
         # Reset Original to normal
-        self.original_label.config(font=("Arial", 12))
+        self.original_label.config(font=("Arial", 16))
 
     def highlight_button(self, button):
         """Highlight the selected button by changing its relief and reset the last button."""
@@ -201,6 +221,11 @@ class PhotoFilterApp:
             self.processed_photo = ImageTk.PhotoImage(display_processed)
             self.original_image_label.config(image=self.original_photo)
             self.processed_image_label.config(image=self.processed_photo)
+            # Adjust window size based on the larger dimension of the displayed images
+            max_width = max(display_original.width, display_processed.width)
+            max_height = max(display_original.height, display_processed.height)
+            # Account for side-by-side and padding
+            self.adjust_window_size(max_width * 2 + 40, max_height + 100)
             # Enable all buttons
             self.bw_button.config(state="normal")
             self.vivid_cool_button.config(state="normal")
@@ -212,6 +237,7 @@ class PhotoFilterApp:
             self.pencil_sketch_button.config(state="normal")
             self.blur_button.config(state="normal")
             self.vintage_polaroid_button.config(state="normal")
+            self.watercolor_button.config(state="normal")
             self.rotate_button.config(state="normal")
             self.save_button.config(state="normal")
 
@@ -456,6 +482,52 @@ class PhotoFilterApp:
             # Update the processed_image to the filtered version
             self.processed_image = vintage_image
 
+    def apply_watercolor_filter(self):
+        if self.processed_image:
+            # Convert to RGB if not already
+            if self.processed_image.mode != 'RGB':
+                rgb_image = self.processed_image.convert('RGB')
+            else:
+                rgb_image = self.processed_image
+
+            # Apply Gaussian blur for softness
+            blurred = rgb_image.filter(ImageFilter.GaussianBlur(radius=2))
+            # Light edge detection
+            edges = blurred.filter(ImageFilter.FIND_EDGES).convert('L')
+            np_edges = np.array(edges, dtype=np.uint8)
+            mask = np_edges > 128  # Boolean mask
+            print(
+                f"Watercolor Edge mask shape: {mask.shape}, True count: {mask.sum()}")
+
+            # Reduce contrast and saturation
+            enhancer_contrast = ImageEnhance.Contrast(blurred)
+            low_contrast = enhancer_contrast.enhance(0.8)
+            enhancer_saturation = ImageEnhance.Color(low_contrast)
+            watercolor = enhancer_saturation.enhance(0.7)
+
+            # Add subtle noise (simulated with NumPy)
+            np_watercolor = np.array(watercolor, dtype=np.uint8)
+            noise = np.random.normal(
+                0, 10, np_watercolor.shape).astype(np.int16)
+            np_watercolor = np.clip(
+                np_watercolor + noise, 0, 255).astype(np.uint8)
+            watercolor_image = Image.fromarray(np_watercolor)
+
+            # Combine with light edges (broadcast [200, 200, 200] for light gray)
+            final = np.array(watercolor_image, dtype=np.uint8)
+            # Assign 200 (light gray) to all RGB channels where mask is True, broadcasting correctly
+            final[mask] = 200
+
+            # Convert back to PIL Image
+            watercolor_image = Image.fromarray(final)
+
+            # Resize for display while maintaining aspect ratio
+            display_watercolor = self.resize_to_fit(watercolor_image)
+            self.processed_photo = ImageTk.PhotoImage(display_watercolor)
+            self.processed_image_label.config(image=self.processed_photo)
+            # Update the processed_image to the filtered version
+            self.processed_image = watercolor_image
+
     def rotate_image(self):
         if self.original_image and self.processed_image:
             # Rotate both the original and processed images 90 degrees clockwise
@@ -473,6 +545,11 @@ class PhotoFilterApp:
             self.processed_photo = ImageTk.PhotoImage(display_processed)
             self.original_image_label.config(image=self.original_photo)
             self.processed_image_label.config(image=self.processed_photo)
+            # Adjust window size based on the larger dimension of the displayed images after rotation
+            max_width = max(display_original.width, display_processed.width)
+            max_height = max(display_original.height, display_processed.height)
+            # Increased padding for larger buttons and labels
+            self.adjust_window_size(max_width * 2 + 80, max_height + 220)
 
     def save_image(self):
         if self.processed_image:
@@ -481,6 +558,19 @@ class PhotoFilterApp:
                                                      ("PNG files", "*.png"), ("JPEG files", "*.jpg")])
             if save_path:
                 self.processed_image.save(save_path)
+
+    def adjust_window_size(self, width, height):
+        """Adjust the window size to fit the images, maintaining a minimum size and adding padding for buttons."""
+        # Add padding for buttons and labels (e.g., 220 for height, 80 for width to accommodate larger buttons and labels)
+        # Minimum width of 1300 to prevent button squeezing
+        new_width = max(width, 1300)
+        # Minimum height of 700 to prevent overlap
+        new_height = max(height, 700)
+        self.root.geometry(f"{new_width}x{new_height}")
+        # Ensure the window can be resized by the user
+        self.root.update_idletasks()
+        # Set minimum size to prevent shrinking below this
+        self.root.minsize(1300, 700)
 
 
 if __name__ == "__main__":
